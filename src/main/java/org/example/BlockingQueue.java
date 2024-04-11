@@ -6,27 +6,26 @@ import java.util.List;
 public class BlockingQueue {
 
     private List queue = new LinkedList();
-    private final int limit = 10;
 
     public synchronized void enqueue(Object object) throws InterruptedException {
+        int limit = 10;
         while (queue.size() == limit) {
+            System.out.println("BLOCK en");
             wait();
         }
-        if (queue.size() == 0) {
-            notifyAll();
-        }
+        notifyAll();
         queue.add(object);
+
 
     }
 
-    public Object dequeue() throws InterruptedException {
-        while (queue.size() == 0){
+    public synchronized  Object dequeue() throws InterruptedException {
+        while (queue.isEmpty()){
+            System.out.println("BLOCK de");
             wait();
         }
-        if (this.queue.size() == this.limit){
-            notifyAll();
-        }
 
+        notifyAll();
         return queue.remove(0);
 
     }
